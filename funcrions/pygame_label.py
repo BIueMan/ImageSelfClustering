@@ -31,7 +31,7 @@ def display_big_image(image_array, screen):
     # Blit the big image onto the screen
     screen.blit(big_image, (0,0))
 
-def select_filter_ui(small_splited, screen, class_num = 1):
+def select_filter_ui(small_splited, screen, class_num = 1, init_sigment = None):
     # params
     filter_britnes = 0.75
 
@@ -71,8 +71,14 @@ def select_filter_ui(small_splited, screen, class_num = 1):
     pygame.draw.rect(screen, (0,   0 ,  255), button_rect_list[selected_filter], 2)
 
     # init loop
-    flipped_images = np.zeros([small_splited.shape[0], small_splited.shape[1]])
     filtered_small_splited = small_splited.copy()
+    if init_sigment is None:
+        flipped_images = np.zeros([small_splited.shape[0], small_splited.shape[1]])
+    else:
+        flipped_images = init_sigment
+        for (i, j), value in np.ndenumerate(flipped_images):
+            #### add filter
+            filtered_small_splited[i, j, :, :, :] = np.clip(small_splited[i, j, :, :, :].copy() + filter_list[value], 0, 255).astype(np.uint8)
     display_big_image(filtered_small_splited, screen)
     pygame.display.flip()
     ## loop
