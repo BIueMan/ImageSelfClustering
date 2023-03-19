@@ -8,13 +8,28 @@ if __name__ == "__main__":
     print(img_test.shape)
 
     splited = split_image(img_test, [200,200], [200, 200])
+    # splited = np.zeros_like(splited).astype('int')
+    # splited[1,:,:,:,0] = 250
+    # splited[5,:,:,:,1] = 250
     size = splited.shape
     print(size)
 
-    W = weight(splited, 1)
+    sigma = 1
+    norm_scale = 0.1
+    W = weight(splited, sigma, norm_scale)
     L = laplacian_graph(W)
 
-    print(L.shape)
+    k = 3  # number of clusters
+    eigenvals, eigenvects = np.linalg.eig(L)
+    indices = np.argsort(eigenvals)[:k]
+    U = eigenvects[:, indices]
+
+    from sklearn.cluster import KMeans
+    kmeans = KMeans(n_clusters=k)
+    kmeans.fit(U)
+    init_labels = kmeans.labels_
+    init_labels = np.reshape(init_labels, [splited.shape[0], splited.shape[1]])
+    print(np.flip(init_labels, axis=1))
 
     from funcrions.pygame_label import *
     # Initialize Pygame
@@ -43,6 +58,6 @@ if __name__ == "__main__":
 
     screen_size = np.array(window_size[::-1]) + np.array([100, 0])
     screen = pygame.display.set_mode(screen_size)
-    flipped_images = select_filter_ui(small_splited, screen, 4)
+    labels = select_filter_ui(small_splited, screen, k, init_labels)
 
-    print(flipped_images)
+    print(labels)
