@@ -2,12 +2,13 @@ import pygame
 import numpy as np
 import cv2
 from funcrions import *
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     img_test = cv2.imread('images/Amanita_muscaria_test.jpeg')
     print(img_test.shape)
 
-    splited = split_image(img_test, [200,200], [200, 200])
+    splited = split_image(img_test, [200,200], [100, 100])
     # splited = np.zeros_like(splited).astype('int')
     # splited[1,:,:,:,0] = 250
     # splited[5,:,:,:,1] = 250
@@ -21,6 +22,8 @@ if __name__ == "__main__":
 
     k = 3  # number of clusters
     eigenvals, eigenvects = np.linalg.eig(L)
+    # plt.plot(np.sort(eigenvals))
+    # plt.show()
     indices = np.argsort(eigenvals)[:k]
     U = eigenvects[:, indices]
 
@@ -58,6 +61,9 @@ if __name__ == "__main__":
 
     screen_size = np.array(window_size[::-1]) + np.array([100, 0])
     screen = pygame.display.set_mode(screen_size)
-    labels = select_filter_ui(small_splited, screen, k, init_labels)
+    S = select_filter_ui(small_splited, screen, k, init_labels)
 
-    print(labels)
+    print('\n')
+    print(S)
+
+    
