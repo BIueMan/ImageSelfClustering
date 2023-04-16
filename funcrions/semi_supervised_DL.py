@@ -4,15 +4,13 @@ import torch.optim as optim
 import itertools
 from funcrions.semi_supervised_learning import *
 
-from funcrions.semi_supervised_DL import loss_function
-
 class ConvPart(nn.Module):
     def __init__(self):
         super(ConvPart, self).__init__()
-        self.conv1 = nn.Conv2d(3, 16, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
-        self.conv3 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
-        self.conv4 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(3, 6, kernel_size=15, padding=0)
+        self.conv2 = nn.Conv2d(6, 12, kernel_size=15, padding=0)
+        self.conv3 = nn.Conv2d(12, 16, kernel_size=15, padding=0)
+        self.conv4 = nn.Conv2d(16, 32, kernel_size=15, padding=0)
 
     def forward(self, x):
         x = nn.functional.relu(self.conv1(x))
@@ -38,7 +36,7 @@ class CNN(nn.Module):
     def __init__(self, image):
         super(CNN, self).__init__()
         self.conv = ConvPart()
-        x = self.conv(torch.rand(1, *image.shape))
+        x = self.conv(torch.rand(*image.shape))
         self.fc = FCPart(x.shape[1]*x.shape[2]*x.shape[3])
 
     def forward(self, x):
@@ -63,19 +61,20 @@ def loss_function(x_loc, P, sigmas, phi_label_func, S, label):
         elif S[m, n] != 0:
             phi = 0                                   # if other label
         else:
-            phi = phi_label_func(P[m, n, :, :, :])    # no label
+            image =  torch.tensor(P[m, n, :, :, :]).permute(2, 0, 1).unsqueeze(0).float()
+            phi = phi_label_func(image)               # no label
         return phi
     phi_x = phi_label(m_x, n_x)
 
     x = P[m_x, n_x, :, :, :]
     m_n_combinations = list(itertools.product(range(m), range(n)))
-    sum = torch.tensor([0])
+    sum = torch.tensor([[0]], dtype=torch.float)
     for combination in m_n_combinations:
         m_y, n_y = combination
         y = P[m_y, n_y, :, :, :]
         phi_y = phi_label(m_y, n_y)
-        w_xy = torch.from_numpy(weight(x, y, [sigmas[m_x, n_x], norm_scale]))
-        w_yx = torch.from_numpy(weight(y, x, [sigmas[m_y, n_y], norm_scale]))
+        w_xy = torch.tensor(weight(x, y, sigmas[m_x, n_x], norm_scale)).reshape([1,1])
+        w_yx = torch.tensor(weight(y, x, sigmas[m_y, n_y], norm_scale)).reshape([1,1])
         sum += (w_xy + w_yx)*(phi_x+phi_y)
     
     return sum

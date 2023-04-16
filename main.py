@@ -8,7 +8,7 @@ if __name__ == "__main__":
     img_test = cv2.imread('images/Amanita_muscaria_test.jpeg')
     print(img_test.shape)
 
-    splited = split_image(img_test, [200,200], [100, 100])
+    splited = split_image(img_test, [200,200], [200, 200])
     # splited = np.zeros_like(splited).astype('int')
     # splited[1,:,:,:,0] = 250
     # splited[5,:,:,:,1] = 250
