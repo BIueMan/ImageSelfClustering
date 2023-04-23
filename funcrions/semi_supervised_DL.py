@@ -7,10 +7,10 @@ from funcrions.semi_supervised_learning import *
 class ConvPart(nn.Module):
     def __init__(self):
         super(ConvPart, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, kernel_size=15, padding=0)
-        self.conv2 = nn.Conv2d(6, 12, kernel_size=15, padding=0)
-        self.conv3 = nn.Conv2d(12, 16, kernel_size=15, padding=0)
-        self.conv4 = nn.Conv2d(16, 32, kernel_size=15, padding=0)
+        self.conv1 = nn.Conv2d(3, 6, kernel_size=5, padding=0)
+        self.conv2 = nn.Conv2d(6, 12, kernel_size=5, padding=0)
+        self.conv3 = nn.Conv2d(12, 16, kernel_size=5, padding=0)
+        self.conv4 = nn.Conv2d(16, 8, kernel_size=5, padding=0)
 
     def forward(self, x):
         x = nn.functional.relu(self.conv1(x))
@@ -23,12 +23,13 @@ class ConvPart(nn.Module):
 class FCPart(nn.Module):
     def __init__(self, input_size):
         super(FCPart, self).__init__()
-        self.fc1 = nn.Linear(input_size, 64)
-        self.fc2 = nn.Linear(64, 1)
+        self.fc1 = nn.Linear(input_size, int(np.sqrt(input_size)))
+        self.fc2 = nn.Linear(int(np.sqrt(input_size)), 1)
 
     def forward(self, x):
         x = nn.functional.relu(self.fc1(x))
         x = self.fc2(x)
+        x = nn.functional.sigmoid(x)
         return x
 
 
@@ -57,12 +58,12 @@ def loss_function(x_loc, P, sigmas, phi_label_func, S, label):
 
     def phi_label(m, n):
         if S[m, n] == label:
-            phi = 1                                   # if this label
+            phi = torch.tensor(1).unsqueeze(0).float()                                     # if this label
         elif S[m, n] != 0:
-            phi = 0                                   # if other label
+            phi = torch.tensor(0).unsqueeze(0).float()                                     # if other label
         else:
             image =  torch.tensor(P[m, n, :, :, :]).permute(2, 0, 1).unsqueeze(0).float()
-            phi = phi_label_func(image)               # no label
+            phi = phi_label_func(image)                                                    # no label
         return phi
     phi_x = phi_label(m_x, n_x)
 

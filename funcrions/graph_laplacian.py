@@ -8,14 +8,9 @@ def weight_idex(img1:np.array, img2:np.array, *args)->np.array:
     if img1.shape != img2.shape:
         raise Exception("input imags shapes are not math")
     
-    [sigma, norm_scale] = args
-    # norm image
-    if np.max(img1) != 0:
-        img1 = img1/np.max(img1)
-    if np.max(img2) != 0:
-        img2 = img2/np.max(img2)
-    abs_2 = np.sum(np.abs(img1**2 - img2**2)) / (norm_scale*img1.size)
-    return np.exp(-abs_2/(2*sigma**2)) # todo: the returning value is to small. (exp(-inf) = 0)
+    [sigma] = args
+    abs_2 = np.sum(np.abs(img1**2 - img2**2))
+    return np.exp(-abs_2/(2*sigma**2))
 
 def weight(splited, *args):
     N, M = splited.shape[0:2]
@@ -35,8 +30,8 @@ def weight(splited, *args):
 def laplacian_graph(weight:np.array):
     return np.diagflat(np.sum(weight, 0)) - weight
 
-def weight_ssl(splited, weight, label):
-    N, M = splited.shape[0:2]
+def weight_ssl(weight, label):
+    N, M = label.shape
     alpha = N*M/np.sum(label!=0) - 1
 
     W_label = np.zeros([N*M, N*M])

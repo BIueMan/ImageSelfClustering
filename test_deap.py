@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # Get Loss Func
     x_loc = [0, 0]
-    sigma = simga_dist(nearest_neighbors(splited), splited.shape)
+    sigma = sigma_dist(nearest_neighbors(splited), splited.shape)
     label_matrix = [[0, 2, 2, 2, 0, 0],
                     [0, 0, 0, 0, 0, 0],
                     [0, 0, 1, 1, 0, 0],
@@ -60,8 +60,9 @@ if __name__ == "__main__":
 
         print('extract phi output: %d', label_num)
         for x_loc in tqdm(itertools.product(range(M), range(N))):
-            image = torch.tensor(splited[*x_loc, :, :, :]).permute(2, 0, 1).unsqueeze(0).float()
-            phi_output_saved[*x_loc, label_num] = model.forward(image)
+            m, n = x_loc
+            image = torch.tensor(splited[m, n, :, :, :]).permute(2, 0, 1).unsqueeze(0).float()
+            phi_output_saved[m, n, label_num] = model.forward(image)
     
     # use phi_i in order to extract Label
     Label = np.argmax(phi_output_saved, axis=2)

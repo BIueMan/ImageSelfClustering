@@ -54,12 +54,13 @@ def select_filter_ui(small_splited, screen, class_num = 1, init_sigment = None):
 
     # create buttons
     button_rect_list = []
+    SPACE_BETWEEN_BUTTONS = 20
     for i in range(filter_list.shape[0]):
         ## create button
         x = end_of_image_loc
-        y = text_size + i * 50
+        y = text_size + i * SPACE_BETWEEN_BUTTONS
         w = 100 
-        h = 50
+        h = SPACE_BETWEEN_BUTTONS
         button_rect_list.append(pygame.Rect(x,y,w,h))
 
         ## plot button with color

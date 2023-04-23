@@ -6,13 +6,13 @@ def nearest_neighbors(splited_image:np.array)->np.array:
     dists = np.sqrt(((arr_flat[:, None] - arr_flat) ** 2).sum(axis=2))
     return dists
 
-def simga_dist(dist_mat:np.array, splited_image_shape, k=5)->np.array:
+def sigma_dist(dist_mat:np.array, splited_image_shape, k=5)->np.array:
     m, n, _, _, _ = splited_image_shape
-    simga = np.zeros(m*n)
+    sigma = np.zeros(m*n)
     for ii in range(m*n):
         closest_points = np.argsort(dist_mat[ii])[:k]
-        simga[ii] = dist_mat[ii, closest_points[k-1]]
-    return simga.reshape(m,n)
+        sigma[ii] = dist_mat[ii, closest_points[k-1]]
+    return sigma.reshape(m,n)/np.max(sigma)
 
 def weight(x:np.array, y:np.array, *args)->np.array:
     if x.shape != y.shape:
@@ -25,5 +25,5 @@ def weight(x:np.array, y:np.array, *args)->np.array:
     if np.max(y) != 0:
         y = y/np.max(y)
     # get weight
-    norm_part = np.linalg.norm(x - y)**2 / norm_scale
+    norm_part = np.sum(np.mean(x - y))**2 / norm_scale
     return np.exp(-norm_part / sigma**2)
