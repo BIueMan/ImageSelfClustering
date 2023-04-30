@@ -1,5 +1,5 @@
 import cv2
-from main import *
+from LaplasianMain import *
 from funcrions.semi_supervised_DL import *
 from funcrions.semi_supervised_learning import *
 import torch
