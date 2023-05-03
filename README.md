@@ -1,5 +1,6 @@
 # Variational methods - Course project
-
+This project use Semi supervised Laplacian (SSL) in order to label patches of a splitted image. When working on the Laplasian grath, we transfer the patches into the laplacian plane, and check how close the patches are.
+Nowadays, the majority of effective algorithms belong to the category of deep learning, which necessitates a substantial amount of computing power and numerous tagged objects. However, in contrast to these algorithms, we can achieve favorable results even with a limited quantity of labeled objects. We can instruct the algorithm on how to divide the image using the limited given labels, and without any supplementary information, except for the provided image.
 | Pre-label patches      | Labels Patches       |
 | :-------------: | :-------------: |
 | <img src="https://github.com/BIueMan/ImageSelfClustering/blob/main/images_for_readme/weighted_nonlocal_laplacian_5.png" width="300"> | <img src="https://github.com/BIueMan/ImageSelfClustering/blob/main/images_for_readme/weighted_nonlocal_laplacian_6.png" width="300"> |
@@ -50,6 +51,9 @@ We will combine both matrices into the $W_{SLL}$ matrix
 $$W_{SLL}= 2W + a\cdot W_{labels}$$
 Now the matrix is increasing the weights associated with the same sub group, and completely eliminates the affinity weight between data points of different subgroups.
 
+## Weightted Nonlocal Laplacian
+Finally, in this study, we accomplished the semi-supervised learning of weighted nonlocal Laplacian, based on the research paper [2].
+This approach attempts to construct functions that cover various functions for each label using the known pre-labels and distances between them in the Laplacian plane. Subsequently, we employ these functions to generate a labeled image. The complete explanation of this algorithm is provided in the attached report.
 # Results
 
 | Pre-label patches      | Labels Patches       |
@@ -57,3 +61,8 @@ Now the matrix is increasing the weights associated with the same sub group, and
 | <img src="https://github.com/BIueMan/ImageSelfClustering/blob/main/images_for_readme/weighted_nonlocal_laplacian_1.png" width="300"> | <img src="https://github.com/BIueMan/ImageSelfClustering/blob/main/images_for_readme/weighted_nonlocal_laplacian_2.png" width="300"> |
 | <img src="https://github.com/BIueMan/ImageSelfClustering/blob/main/images_for_readme/weighted_nonlocal_laplacian_3.png" width="300"> | <img src="https://github.com/BIueMan/ImageSelfClustering/blob/main/images_for_readme/weighted_nonlocal_laplacian_4.png" width="300"> |
 | <img src="https://github.com/BIueMan/ImageSelfClustering/blob/main/images_for_readme/weighted_nonlocal_laplacian_5.png" width="300"> | <img src="https://github.com/BIueMan/ImageSelfClustering/blob/main/images_for_readme/weighted_nonlocal_laplacian_6.png" width="300"> |
+
+# References
+- Or Streicher and Guy Gilboa. Graph Laplacian for Semi-Supervised Learning. 2023. arXiv:2301.04956 [cs.CV].
+- Shi, Zuoqiang, Stanley Osher, and Wei Zhu. "Weighted nonlocal laplacian on interpolation from sparse data." Journal of Scientific Computing 73, no. 2 (2017): 1164-1177.
+- Xin-Ye Li and Li-jie Guo. "Constructing affinity matrix in spectral clustering based on neighbor propagation." Neurocomputing 97 (2012): 125-130.
